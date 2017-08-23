@@ -30,14 +30,21 @@
 
 	function ballCollisionDetection() {
 		
-		// ceiling and floor
-		if (ballY + dy < ballRadius || ballY + dy > canvas.height - ballRadius) {
-			dy = -dy;
-		}
-
 		// lefy and right walls
 		if (ballX + dx < ballRadius || ballX + dx > canvas.width - ballRadius) {
 			dx = -dx;
+		}
+
+		// ceiling
+		if (ballY + dy < ballRadius) {
+			dy = -dy;
+		} else if (ballY + dy > canvas.height - ballRadius) {
+			// check if paddle has been hit
+			if (ballX >= paddleX && ballX <= paddleX + paddleWidth) {
+				dy = -dy;
+			} else if (ballY + dy > canvas.height + ballRadius * 2){
+				gameOver();
+			}
 		}
 
 	}
@@ -72,6 +79,11 @@
 		ctx.fillStyle = '#0095DD';
 		ctx.fill();
 		ctx.closePath();
+	}
+
+	function gameOver() {
+		alert('Gave Over');
+		document.location.reload();
 	}
 
 	function keyDownHandler(event) {
