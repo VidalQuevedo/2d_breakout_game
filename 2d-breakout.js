@@ -59,17 +59,33 @@
 
 	}
 
+	function bricksCollisionDetection() {
+		for (var c = 0; c < brickColumnCount; c++) {
+			for (var r = 0; r < brickRowCount; r++) {
+				var brick = bricks[c][r];
+				if (brick.status === 1) {
+					if (ballX > brick.x && ballX < brick.x + brickWidth && ballY > brick.y && ballY < brick.y + brickHeight) {
+						dy = -dy;
+						brick.status = 0;
+					}					
+				}
+			}
+		}
+	}
+
 	function clearCanvas() {
 		ctx.clearRect(0, 0, canvas.width, canvas.width);
 	}
 
 	function draw() {
 		clearCanvas();
-		drawBall();
-		ballCollisionDetection();
-		drawPaddle();
-		paddleCollisionDetection();
 		drawBricks();
+		drawBall();
+		drawPaddle();
+		ballCollisionDetection();
+		paddleCollisionDetection();
+		bricksCollisionDetection();
+
 	}
 
 	function drawBall() {
@@ -86,16 +102,19 @@
 
 	function drawBricks() {
 		for (var c = 0; c < brickColumnCount; c++) {
-			bricks[c] = [];
 			for (var r = 0; r < brickRowCount; r++) {
-				var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
-				var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
-				bricks[c][r] = {x: brickX, y: brickY};
-				ctx.beginPath();
-				ctx.rect(brickX, brickY, brickWidth, brickHeight);
-				ctx.fillStyle = '#0095DD';
-				ctx.fill();
-				ctx.closePath();
+				var brick = bricks[c][r];
+				if (brick.status === 1) {
+					var brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+					var brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+					brick.x = brickX;
+					brick.y = brickY;
+					ctx.beginPath();
+					ctx.rect(brickX, brickY, brickWidth, brickHeight);
+					ctx.fillStyle = '#0095DD';
+					ctx.fill();
+					ctx.closePath();					
+				}
 			}
 		}
 	}
@@ -130,6 +149,7 @@
 	}
 
 	function init() {
+		populateBricks();
 		addEventListeners();
 		setInterval(draw, 10);		
 	}
@@ -139,6 +159,15 @@
 			paddleX += 7;
 		} else if (leftPressed && paddleX > 0) {
 			paddleX -= 7;
+		}
+	}
+
+	function populateBricks() {
+		for (var c = 0; c < brickColumnCount; c++) {
+			bricks[c] = [];
+			for (var r = 0; r < brickRowCount; r++) {
+				bricks[c][r] = {x: 0, y: 0, status: 1};
+			}
 		}
 	}
 
