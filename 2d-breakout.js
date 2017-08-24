@@ -7,25 +7,24 @@
 	var ballRadius = 10;
 	var ballX = canvas.width / 2;
 	var ballY = canvas.height - 30;
+	var brickColumnCount = 5;
+	var brickHeight = 20;
+	var brickOffsetLeft = 30;
+	var brickOffsetTop = 30;
+	var brickPadding = 10;
+	var brickRowCount = 3;
+	var bricks = [];
+	var brickWidth = 75;
 	var ctx = canvas.getContext('2d');
 	var dx = 2;
 	var dy = -2;
+	var leftPressed = false;
 	var paddleHeight = 10;
 	var paddleWidth = 75;
 	var paddleX = (canvas.width - paddleWidth) / 2;
 	var paddleY = (canvas.height - paddleHeight);
 	var rightPressed = false;
-	var leftPressed = false;
-
-	var brickRowCount = 3;
-	var brickColumnCount = 5;
-	var brickWidth = 75;
-	var brickHeight = 20;
-	var brickPadding = 10;
-	var brickOffsetTop = 30;
-	var brickOffsetLeft = 30;
-
-	var bricks = [];
+	var score = 0;
 
 
 	init();
@@ -67,6 +66,10 @@
 					if (ballX > brick.x && ballX < brick.x + brickWidth && ballY > brick.y && ballY < brick.y + brickHeight) {
 						dy = -dy;
 						brick.status = 0;
+						score++;
+						if (score === brickColumnCount * brickRowCount) {
+							win();
+						}
 					}					
 				}
 			}
@@ -82,10 +85,10 @@
 		drawBricks();
 		drawBall();
 		drawPaddle();
+		drawScore();
 		ballCollisionDetection();
 		paddleCollisionDetection();
 		bricksCollisionDetection();
-
 	}
 
 	function drawBall() {
@@ -124,6 +127,14 @@
 		ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
 		ctx.fillStyle = '#0095DD';
 		ctx.fill();
+		ctx.closePath();
+	}
+
+	function drawScore() {
+		ctx.beginPath();
+		ctx.font = '16px Arial';
+		ctx.fillStyle = '#0095DD';
+		ctx.fillText('Score: ' + score, 8, 20);
 		ctx.closePath();
 	}
 
@@ -169,6 +180,11 @@
 				bricks[c][r] = {x: 0, y: 0, status: 1};
 			}
 		}
+	}
+
+	function win() {
+		alert('You win!!!');
+		document.location.reload();
 	}
 
 })();
