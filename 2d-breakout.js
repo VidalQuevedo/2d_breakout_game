@@ -16,8 +16,8 @@
 	var bricks = [];
 	var brickWidth = 75;
 	var ctx = canvas.getContext('2d');
-	var dx = 2;
-	var dy = -2;
+	var dx = 3;
+	var dy = -3;
 	var leftPressed = false;
 	var paddleHeight = 10;
 	var paddleWidth = 75;
@@ -25,6 +25,7 @@
 	var paddleY = (canvas.height - paddleHeight);
 	var rightPressed = false;
 	var score = 0;
+	var lives = 3;
 
 
 	init();
@@ -53,7 +54,13 @@
 			if (ballX >= paddleX && ballX <= paddleX + paddleWidth) {
 				dy = -dy;
 			} else if (ballY + dy > canvas.height + ballRadius * 2){
-				// gameOver();
+				lives--;
+				if (!lives) {
+					gameOver();	
+				} else {
+					startRound();
+				}
+				
 			}
 		}
 
@@ -87,9 +94,12 @@
 		drawBall();
 		drawPaddle();
 		drawScore();
+		drawLives();
 		ballCollisionDetection();
 		paddleCollisionDetection();
 		bricksCollisionDetection();
+
+		requestAnimationFrame(draw);
 	}
 
 	function drawBall() {
@@ -123,6 +133,14 @@
 		}
 	}
 
+	function drawLives() {
+		ctx.beginPath();
+		ctx.font = '16px Arial';
+		ctx.fillStyle = '#0095DD';
+		ctx.fillText('Lives: ' + lives, canvas.width - 65, 20);
+		ctx.closePath();
+	}	
+
 	function drawPaddle() {
 		ctx.beginPath();
 		ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
@@ -147,7 +165,7 @@
 	function init() {
 		populateBricks();
 		addEventListeners();
-		setInterval(draw, 10);		
+		draw();
 	}
 
 	function keyDownHandler(event) {
@@ -188,6 +206,14 @@
 				bricks[c][r] = {x: 0, y: 0, status: 1};
 			}
 		}
+	}
+
+	function startRound() {
+		ballX = canvas.width / 2;
+		ballY = canvas.height - 30;
+		dx = 3;
+		dy = -3;
+		paddleX = (canvas.width - paddleWidth) / 2;
 	}
 
 	function win() {
