@@ -35,6 +35,7 @@
 	function addEventListeners() {
 		document.addEventListener('keydown', keyDownHandler, false);
 		document.addEventListener('keyup', keyUpHandler, false);
+		document.addEventListener('mousemove', mouseMoveHandler, false);
 	}
 
 	function ballCollisionDetection() {
@@ -52,7 +53,7 @@
 			if (ballX >= paddleX && ballX <= paddleX + paddleWidth) {
 				dy = -dy;
 			} else if (ballY + dy > canvas.height + ballRadius * 2){
-				gameOver();
+				// gameOver();
 			}
 		}
 
@@ -143,6 +144,12 @@
 		document.location.reload();
 	}
 
+	function init() {
+		populateBricks();
+		addEventListeners();
+		setInterval(draw, 10);		
+	}
+
 	function keyDownHandler(event) {
 		if (event.keyCode === 39) {
 			rightPressed = true;
@@ -159,10 +166,11 @@
 		}
 	}
 
-	function init() {
-		populateBricks();
-		addEventListeners();
-		setInterval(draw, 10);		
+	function mouseMoveHandler(event) {
+		var relativeX = event.clientX - canvas.offsetLeft;
+		if (relativeX > 0 && relativeX < canvas.width) {
+			paddleX = relativeX - paddleWidth / 2;
+		}
 	}
 
 	function paddleCollisionDetection() {
