@@ -51,16 +51,15 @@
 			dy = -dy;
 		} else if (ballY + dy > canvas.height - ballRadius) {
 			// check if paddle has been hit
-			if (ballX >= paddleX && ballX <= paddleX + paddleWidth) {
+			if (ballX > paddleX && ballX < paddleX + paddleWidth) {
 				dy = -dy;
-			} else if (ballY + dy > canvas.height + ballRadius * 2){
+			} else {
 				lives--;
 				if (!lives) {
 					gameOver();	
 				} else {
 					startRound();
 				}
-				
 			}
 		}
 
